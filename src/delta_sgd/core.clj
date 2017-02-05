@@ -7,6 +7,11 @@
               {:xs [1.0 0 1.0] :d 1.0}
               {:xs [1.0 1.0 1.0] :d 1.0}])
 
+(def linearly-inseparable-samples [{:xs [0 0 1.0] :d 0} 
+                                   {:xs [0 1.0 1.0] :d 1.0} 
+                                   {:xs [1.0 0 1.0] :d 1.0}
+                                   {:xs [1.0 1.0 1.0] :d 0}])
+
 (defn- sigmoid [x]
   (/ 1.0 (+ 1.0 (Math/exp (- x)))))
 
@@ -27,30 +32,20 @@
     init-ws
     inputs))
 
-(defn train [n]
+(defn train [n samples]
   (delta-sgd
     [(init-w) (init-w) (init-w)]
     (flatten (repeat n samples))))
 
 (defn -main [& args]
-  (let [ws (train 10000)
+  (println "linearly separable sample")
+  (let [ws (train 10000 samples)
         xs (map :xs samples)]
     (println "target ouput     : " (map :d samples))
+    (println "inference output : " (map #(output ws %) xs)))
+  
+  (println "linearly inseparable sample")
+  (let [ws (train 10000 linearly-inseparable-samples)
+        xs (map :xs linearly-inseparable-samples)]
+    (println "target ouput     : " (map :d samples))
     (println "inference output : " (map #(output ws %) xs))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
